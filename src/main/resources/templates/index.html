@@ -73,12 +73,13 @@
                     <td th:text="${task.jobTime}">Job Time</td>
                     <td>
                         <span th:text="${task.status}">Status</span>
-                        <button class="btn btn-link" onclick="showUpdateStatusModal('${task.name}')">
+                        <!-- For updating status -->
+                        <button class="btn btn-link" th:onclick="showUpdateStatusModal([[${task.name}]])">
                             <i class="fas fa-pen"></i>
                         </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-link" onclick="removeTask('${task.name}')">
+
+                        <!-- For removing task -->
+                        <button class="btn btn-link" th:onclick="removeTask([[${task.name}]])">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>

@@ -30,7 +30,25 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/days-left')
             .then(response => response.json())
             .then(data => {
-                console.log('Days left for tasks:', data);
+                let daysLeftHtml = '<ul>';
+                for (const [taskName, daysLeft] of Object.entries(data)) {
+                    daysLeftHtml += `<li>${taskName}: ${daysLeft} day(s) left</li>`;
+                }
+                daysLeftHtml += '</ul>';
+
+                Swal.fire({
+                    title: 'Days Left for Tasks',
+                    html: daysLeftHtml,
+                    icon: 'info'
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire(
+                    'Error!',
+                    'An error occurred while fetching days left for tasks.',
+                    'error'
+                );
             });
     }
 
@@ -40,27 +58,41 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#statusModal').modal('show');
     }
 
-    // Function to handle status update form submission
     document.getElementById('statusForm').addEventListener('submit', function(event) {
         event.preventDefault();
         const taskName = document.getElementById('taskName').value;
         const newStatus = document.getElementById('newStatus').value;
 
-        fetch(`/update-status?taskName=${taskName}&newStatus=${newStatus}`, {
-            method: 'POST'
-        }).then(() => {
+        fetch(`/update-status?taskName=${encodeURIComponent(taskName)}&newStatus=${encodeURIComponent(newStatus)}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        }).then(response => {
+            if (response.ok) {
+                return response.text();
+            }
+            throw new Error('Network response was not ok.');
+        }).then(data => {
+            console.log('Server response:', data);
             Swal.fire(
                 'Updated!',
-                `Task ${taskName} status has been updated.`,
+                `Task "${taskName}" status has been updated to "${newStatus}".`,
                 'success'
             ).then(() => {
                 $('#statusModal').modal('hide');
                 window.location.reload();
             });
+        }).catch(error => {
+            console.error('Error:', error);
+            Swal.fire(
+                'Error!',
+                'An error occurred while updating the task status.',
+                'error'
+            );
         });
     });
 
-    // Function to remove a task
     window.removeTask = function(taskName) {
         Swal.fire({
             title: 'Are you sure?',
@@ -72,16 +104,32 @@ document.addEventListener('DOMContentLoaded', function() {
             confirmButtonText: 'Yes, remove it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`/remove?taskName=${taskName}`, {
-                    method: 'POST'
-                }).then(() => {
+                fetch(`/remove?taskName=${encodeURIComponent(taskName)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    }
+                    throw new Error('Network response was not ok.');
+                }).then(data => {
+                    console.log('Server response:', data);
                     Swal.fire(
                         'Removed!',
-                        `Task ${taskName} has been removed.`,
+                        `Task "${taskName}" has been removed.`,
                         'success'
                     ).then(() => {
                         window.location.reload();
                     });
+                }).catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire(
+                        'Error!',
+                        'An error occurred while removing the task.',
+                        'error'
+                    );
                 });
             }
         });

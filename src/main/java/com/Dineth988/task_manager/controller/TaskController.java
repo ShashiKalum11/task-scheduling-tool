@@ -42,25 +42,27 @@ public class TaskController {
     }
 
     @PostMapping("/remove")
+    @ResponseBody
     public String removeTask(@RequestParam String taskName) {
         try {
             taskService.removeTask(taskName);
+            return String.format("Task '%s' has been removed successfully", taskName);
         } catch (Exception e) {
             e.printStackTrace();
-            return "error";
+            return "Error: " + e.getMessage();
         }
-        return "redirect:/";
     }
 
     @PostMapping("/update-status")
+    @ResponseBody
     public String updateTaskStatus(@RequestParam String taskName, @RequestParam String newStatus) {
         try {
-            taskService.updateTaskStatus(taskName, newStatus);
+            Task updatedTask = taskService.updateTaskStatus(taskName, newStatus);
+            return String.format("Task '%s' status updated to '%s'", updatedTask.getName(), updatedTask.getStatus());
         } catch (Exception e) {
             e.printStackTrace();
-            return "error";
+            return "Error: " + e.getMessage();
         }
-        return "redirect:/";
     }
 
     @GetMapping("/count")

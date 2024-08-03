@@ -35,7 +35,7 @@ public class TaskService {
         }
     }
 
-    public void updateTaskStatus(String taskName, String newStatus) {
+    public Task updateTaskStatus(String taskName, String newStatus) {
         // Assuming you have a method to get a task by name
         Task task = getTaskByName(taskName);
         if (task != null) {
@@ -45,6 +45,7 @@ public class TaskService {
         } else {
             System.out.println("Task not found.");
         }
+        return task;
     }
 
     public Task getTaskByName(String name) {
