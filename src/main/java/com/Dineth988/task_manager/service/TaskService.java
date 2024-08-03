@@ -108,12 +108,15 @@ public class TaskService {
         return result;
     }
 
-    public List<String> getAllTaskStatuses() {
-        Set<String> statuses = new HashSet<>();
-        for (Task task : tasks.getTasks()) {
-            statuses.add(task.getStatus());
+    public List<Map<String, String>> getAllTaskStatuses() {
+        List<Map<String, String>> statuses = new ArrayList<>();
+        for (Task task : getAllTasks()) {
+            Map<String, String> taskStatus = new HashMap<>();
+            taskStatus.put("name", task.getName());
+            taskStatus.put("status", task.getStatus());
+            statuses.add(taskStatus);
         }
-        return new ArrayList<>(statuses);
+        return statuses;
     }
 
     public List<Task> getPriorityUpdatedTasks() {

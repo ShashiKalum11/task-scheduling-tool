@@ -172,3 +172,47 @@ dialog.modal .close:hover {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
+
+/* Custom Button Styles */
+.btn-link {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.btn-link i {
+    font-size: 1.2rem;
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+.btn-link:hover i {
+    color: #0056b3;
+}
+
+/* Action Button Styles */
+.action-buttons .btn-link {
+    margin: 0 5px;
+}
+
+.action-buttons .btn-link .fas.fa-pen {
+    color: #28a745;
+}
+
+.action-buttons .btn-link .fas.fa-pen:hover {
+    color: #218838;
+}
+
+.action-buttons .btn-link .fas.fa-trash {
+    color: #dc3545;
+}
+
+.action-buttons .btn-link .fas.fa-trash:hover {
+    color: #c82333;
+}
+
+.btn {
+    margin-left: 10px;
+    margin-right: 10px;
+}

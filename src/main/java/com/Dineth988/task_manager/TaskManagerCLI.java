@@ -187,9 +187,9 @@ public class TaskManagerCLI {
     }
 
     private void showStatusWindow() {
-        List<String> statuses = taskService.getAllTaskStatuses();
+        List<Map<String, String>> statuses = taskService.getAllTaskStatuses();
         System.out.println("Task Statuses:");
-        for (String status : statuses) {
+        for (Map<String, String> status : statuses) {
             System.out.println("- " + status);
         }
     }

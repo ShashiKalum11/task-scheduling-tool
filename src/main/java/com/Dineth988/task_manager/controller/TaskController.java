@@ -3,6 +3,8 @@ package com.Dineth988.task_manager.controller;
 import com.Dineth988.task_manager.model.Task;
 import com.Dineth988.task_manager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -96,15 +99,22 @@ public class TaskController {
     }
 
     @GetMapping("/priority-updated")
-    public String getPriorityUpdatedTasks(Model model) {
-        model.addAttribute("tasks", taskService.getPriorityUpdatedTasks());
-        return "index";
+    @ResponseBody
+    public List<Task> getPriorityUpdatedTasks() {
+        return taskService.getPriorityUpdatedTasks();
     }
 
     @GetMapping("/status-window")
-    public String showStatusWindow(Model model) {
-        model.addAttribute("statuses", taskService.getAllTaskStatuses());
-        return "statusWindow";
+    @ResponseBody
+    public ResponseEntity<?> showStatusWindow() {
+        try {
+            List<Map<String, String>> statuses = taskService.getAllTaskStatuses();
+            return ResponseEntity.ok(statuses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error fetching task statuses: " + e.getMessage());
+        }
     }
 
     @GetMapping("/search")

@@ -20,9 +20,29 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/jobtime';
     }
 
-    // Function to show tasks with updated priority
     window.showPriorityUpdatedTasks = function() {
-        window.location.href = '/priority-updated';
+        fetch('/priority-updated')
+            .then(response => response.json())
+            .then(tasks => {
+                let taskList = tasks.map(task =>
+                    `<li>Task: ${task.name}, Priority: ${task.priority}</li>`
+                ).join('');
+
+                Swal.fire({
+                    title: 'Priority Updated Tasks',
+                    html: `<ul>${taskList}</ul>`,
+                    icon: 'info',
+                    width: '600px'
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to fetch priority updated tasks.',
+                    'error'
+                );
+            });
     }
 
     // Function to show days left for tasks
@@ -135,12 +155,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Function to show task status window
     window.showTaskStatusWindow = function() {
-        const statusWindow = document.getElementById('statusWindow');
-        if (statusWindow) {
-            statusWindow.showModal();
-        }
+        fetch('/status-window')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with status: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(statuses => {
+                let statusList = statuses.map(task => `<li>${task.name}: ${task.status}</li>`).join('');
+
+                Swal.fire({
+                    title: 'Task Statuses',
+                    html: statusList ? `<ul>${statusList}</ul>` : 'No tasks found.',
+                    icon: 'info',
+                    width: '600px'
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to fetch task statuses: ' + error.message,
+                    'error'
+                );
+            });
     }
 
     // Function to show task count
