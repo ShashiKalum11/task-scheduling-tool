@@ -2,15 +2,31 @@ package com.Dineth988.task_manager.model;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class Task {
-    private int priority;
-    private String name;
-    private LocalDate deadline;
-    private int jobTime;
-    private String status;
 
-    // Constructor
+    @Min(value = 1, message = "Priority must be at least 1")
+    private int priority;
+
+    @NotNull(message = "Name cannot be null")
+    @Size(min = 1, message = "Name cannot be empty")
+    private String name;
+
+    @NotNull(message = "Deadline cannot be null")
+    private LocalDate deadline;
+
+    @Min(value = 1, message = "Job Time must be at least 1")
+    private int jobTime;
+
+    private String status; // Default status
+
+    // No-argument constructor (required by some frameworks)
+    public Task() {}
+
+    // Constructor with parameters
     public Task(int priority, String name, LocalDate deadline, int jobTime) {
         this.priority = priority;
         this.name = name;
@@ -19,42 +35,50 @@ public class Task {
         this.status = "Not Started"; // Default status
     }
 
+    public Task(int priority, String name, LocalDate deadline, int jobTime, String status) {
+        this.priority = priority;
+        this.name = name;
+        this.deadline = deadline;
+        this.jobTime = jobTime;
+        this.status = status;
+    }
+
+
     // Getters
     public int getPriority() {
         return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public String getName() {
         return name;
     }
 
-    public LocalDate getDeadline() {
-        return deadline;
-    }
-
-    public int getJobTime() {
-        return jobTime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    // Setters
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
     }
 
     public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 
+    public int getJobTime() {
+        return jobTime;
+    }
+
     public void setJobTime(int jobTime) {
         this.jobTime = jobTime;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {
@@ -64,13 +88,8 @@ public class Task {
     // toString method for easy printing
     @Override
     public String toString() {
-        return "Task{" +
-                "priority=" + priority +
-                ", name='" + name + '\'' +
-                ", deadline=" + deadline +
-                ", jobTime=" + jobTime +
-                ", status='" + status + '\'' +
-                '}';
+        return String.format("Task{priority=%d, name='%s', deadline=%s, jobTime=%d, status='%s'}",
+                priority, name, deadline, jobTime, status);
     }
 
     // equals and hashCode methods for proper object comparison

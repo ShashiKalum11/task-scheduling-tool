@@ -1,52 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-<h1>Task Manager</h1>
+<div class="container mt-4">
+    <h1 class="text-center">Task Manager</h1>
 
-<!-- Task Form -->
-<form action="/add" method="post">
-    <input type="text" name="name" placeholder="Task Name" required>
-    <input type="number" name="priority" placeholder="Priority">
-    <input type="date" name="deadline" placeholder="Deadline">
-    <input type="number" name="jobTime" placeholder="Job Time">
-    <button type="submit">Add Task</button>
-</form>
+    <!-- Add Task Form -->
+    <div class="card mb-4">
+        <div class="card-header">Add Task</div>
+        <div class="card-body">
+            <form action="/add" method="post">
+                <div class="form-group">
+                    <label for="name">Task Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <input type="number" class="form-control" id="priority" name="priority" min="1" max="4" required>
+                </div>
+                <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" class="form-control" id="deadline" name="deadline" required>
+                </div>
+                <div class="form-group">
+                    <label for="jobTime">Job Time</label>
+                    <input type="number" class="form-control" id="jobTime" name="jobTime" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Task</button>
+            </form>
+        </div>
+    </div>
 
-<!-- Task Search -->
-<input type="text" id="searchKeyword" placeholder="Search tasks...">
-<button onclick="searchTask()">Search</button>
+    <!-- Search Task -->
+    <div class="form-group mb-4">
+        <label for="searchKeyword">Search Tasks</label>
+        <div class="input-group">
+            <input type="text" class="form-control" id="searchKeyword" placeholder="Enter task name">
+            <div class="input-group-append">
+                <button class="btn btn-secondary" onclick="searchTask()"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </div>
 
-<!-- Task List -->
-<div id="taskList">
-    <ul>
-        <li th:each="task : ${tasks}">
-            <span th:text="${task.name}"></span>
-            <span th:text="${task.priority}"></span>
-            <span th:text="${task.deadline}"></span>
-            <span th:text="${task.jobTime}"></span>
-            <span th:text="${task.status}"></span>
-        </li>
-    </ul>
+    <!-- Display Tasks -->
+    <div class="card">
+        <div class="card-header">Tasks</div>
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                    <th>Job Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td th:text="${task.name}">Task Name</td>
+                    <td th:text="${task.priority}">Priority</td>
+                    <td th:text="${task.deadline}">Deadline</td>
+                    <td th:text="${task.jobTime}">Job Time</td>
+                    <td>
+                        <span th:text="${task.status}">Status</span>
+                        <button class="btn btn-link" onclick="showUpdateStatusModal('${task.name}')">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-link" onclick="removeTask('${task.name}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="btn-group mb-4" role="group">
+        <button type="button" class="btn btn-secondary" onclick="showTasksByPriority()">List Tasks By Priority</button>
+        <button type="button" class="btn btn-secondary" onclick="showTasksByEDF()">List Tasks By Deadline (EDF)</button>
+        <button type="button" class="btn btn-secondary" onclick="showTasksBySJF()">List Tasks By Shortest Job First (SJF)</button>
+        <button type="button" class="btn btn-secondary" onclick="showDaysLeft()">Show Days Left</button>
+        <button type="button" class="btn btn-secondary" onclick="showPriorityUpdatedTasks()">Print Priority Updated Tasks</button>
+        <button type="button" class="btn btn-secondary" onclick="showTaskStatusWindow()">Task Status Window</button>
+        <button type="button" class="btn btn-secondary" onclick="showTaskCount()">Show Task Count</button>
+    </div>
+
+    <!-- Status Update Modal -->
+    <div class="modal fade" id="statusModal" tabindex="-1" aria-labelledby="statusModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="statusModalLabel">Update Task Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="statusForm">
+                        <input type="hidden" id="taskName" name="taskName">
+                        <div class="form-group">
+                            <label for="newStatus">New Status</label>
+                            <input type="text" class="form-control" id="newStatus" name="newStatus" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Status Window Modal -->
+    <dialog id="statusWindow" class="modal">
+        <div class="modal-content">
+            <span class="close" data-target="statusWindow">&times;</span>
+            <h2>Task Statuses</h2>
+            <ul id="statusList"></ul>
+        </div>
+    </dialog>
 </div>
 
-<!-- Status Window -->
-<div id="statusWindow" class="modal">
-    <ul>
-        <li th:each="status : ${statuses}">
-            <span th:text="${status}"></span>
-        </li>
-    </ul>
-</div>
-
-<!-- Sorting and Filtering Buttons -->
-<button onclick="showTasksByEDF()">Sort by EDF</button>
-<button onclick="showTasksBySJF()">Sort by SJF</button>
-
-<script src="script.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>

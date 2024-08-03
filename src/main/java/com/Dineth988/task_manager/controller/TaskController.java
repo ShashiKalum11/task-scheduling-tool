@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import jakarta.validation.Valid;
 
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -23,20 +25,41 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public String addTask(@ModelAttribute Task task) {
-        taskService.addTask(task);
-        return "redirect:/";
+    public String addTask(@ModelAttribute @Valid Task task, BindingResult result) {
+        if (result.hasErrors()) {
+            for (ObjectError error : result.getAllErrors()) {
+                System.err.println(error.getDefaultMessage());
+            }
+            return "error";
+        }
+        try {
+            taskService.addTask(task);
+            return "redirect:/";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
     }
 
     @PostMapping("/remove")
     public String removeTask(@RequestParam String taskName) {
-        taskService.removeTask(taskName);
+        try {
+            taskService.removeTask(taskName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
         return "redirect:/";
     }
 
     @PostMapping("/update-status")
     public String updateTaskStatus(@RequestParam String taskName, @RequestParam String newStatus) {
-        taskService.updateTaskStatus(taskName, newStatus);
+        try {
+            taskService.updateTaskStatus(taskName, newStatus);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
         return "redirect:/";
     }
 
@@ -70,9 +93,9 @@ public class TaskController {
         return taskService.getDaysLeftForTasks();
     }
 
-    @GetMapping("/search")
-    public String searchTasks(@RequestParam String keyword, Model model) {
-        model.addAttribute("tasks", taskService.searchTasks(keyword));
+    @GetMapping("/priority-updated")
+    public String getPriorityUpdatedTasks(Model model) {
+        model.addAttribute("tasks", taskService.getPriorityUpdatedTasks());
         return "index";
     }
 
@@ -82,9 +105,9 @@ public class TaskController {
         return "statusWindow";
     }
 
-    @GetMapping("/priority-updated")
-    public String getPriorityUpdatedTasks(Model model) {
-        model.addAttribute("tasks", taskService.getPriorityUpdatedTasks());
+    @GetMapping("/search")
+    public String searchTasks(@RequestParam String keyword, Model model) {
+        model.addAttribute("tasks", taskService.searchTasks(keyword));
         return "index";
     }
 

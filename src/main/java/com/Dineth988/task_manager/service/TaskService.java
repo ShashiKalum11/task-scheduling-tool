@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
 
-    private List<Task> tasks = new ArrayList<>();
+    private final CustomPriorityQueue tasks = new CustomPriorityQueue();
+    private final BubbleSort bubbleSort = new BubbleSort();
 
     public void addTask(Task task) {
         tasks.add(task);
@@ -19,48 +19,78 @@ public class TaskService {
     }
 
     public List<Task> getAllTasks() {
-        return tasks;
+        return tasks.getTasks();
     }
 
     public void removeTask(String taskName) {
-        tasks.removeIf(task -> task.getName().equals(taskName));
+        Task taskToRemove = null;
+        for (Task task : tasks.getTasks()) {
+            if (task.getName().equals(taskName)) {
+                taskToRemove = task;
+                break;
+            }
+        }
+        if (taskToRemove != null) {
+            tasks.remove(taskToRemove);
+        }
     }
 
     public void updateTaskStatus(String taskName, String newStatus) {
-        tasks.stream()
-                .filter(task -> task.getName().equals(taskName))
-                .findFirst()
-                .ifPresent(task -> task.setStatus(newStatus));
+        // Assuming you have a method to get a task by name
+        Task task = getTaskByName(taskName);
+        if (task != null) {
+            task.setStatus(newStatus);
+            // Re-add or update the task in the priority queue
+            tasks.updateTask(task);
+        } else {
+            System.out.println("Task not found.");
+        }
+    }
+
+    public Task getTaskByName(String name) {
+        for (Task task : tasks.getTasks()) {
+            if (task.getName().equals(name)) {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public void updateTaskPriority(String taskName, int newPriority) {
+        tasks.updatePriority(taskName, newPriority);
     }
 
     public long getTaskCount() {
-        return tasks.size();
+        return tasks.getTasks().size();
+    }
+
+    public List<Task> getTasks() {
+        // This method should return a list of tasks, e.g., from a data structure
+        return tasks.getTasks();
     }
 
     public List<Task> getTasksSortedByPriority() {
-        return tasks.stream()
-                .sorted(Comparator.comparingInt(Task::getPriority)
-                        .thenComparing(Task::getDeadline)
-                        .thenComparingInt(Task::getJobTime))
-                .collect(Collectors.toList());
+        List<Task> sortedTasks = new ArrayList<>(tasks.getTasks());
+        bubbleSort.bubbleSortByPriority(sortedTasks);
+        return sortedTasks;
     }
 
     public List<Task> getTasksSortedByDeadline() {
-        return tasks.stream()
-                .sorted(Comparator.comparing(Task::getDeadline))
-                .collect(Collectors.toList());
+        List<Task> sortedTasks = new ArrayList<>(tasks.getTasks());
+        bubbleSort.bubbleSortByDeadline(sortedTasks);
+        return sortedTasks;
     }
 
     public List<Task> getTasksSortedByJobTime() {
-        return tasks.stream()
-                .sorted(Comparator.comparingInt(Task::getJobTime))
-                .collect(Collectors.toList());
+        List<Task> sortedTasks = new ArrayList<>(tasks.getTasks());
+        bubbleSort.bubbleSortByJobTime(sortedTasks);
+        return sortedTasks;
     }
 
     public Map<String, Long> getDaysLeftForTasks() {
         LocalDate today = LocalDate.now();
         Map<String, Long> daysLeft = new HashMap<>();
-        for (Task task : tasks) {
+        for (Task task : tasks.getTasks()) {
             long daysUntilDeadline = ChronoUnit.DAYS.between(today, task.getDeadline());
             daysLeft.put(task.getName(), daysUntilDeadline);
         }
@@ -68,23 +98,32 @@ public class TaskService {
     }
 
     public List<Task> searchTasks(String keyword) {
-        return tasks.stream()
-                .filter(task -> task.getName().contains(keyword))
-                .collect(Collectors.toList());
+        List<Task> result = new ArrayList<>();
+        for (Task task : tasks.getTasks()) {
+            if (task.getName().toLowerCase().contains(keyword.toLowerCase())) {
+                result.add(task);
+            }
+        }
+        return result;
     }
 
     public List<String> getAllTaskStatuses() {
-        return tasks.stream()
-                .map(Task::getStatus)
-                .distinct()
-                .collect(Collectors.toList());
+        Set<String> statuses = new HashSet<>();
+        for (Task task : tasks.getTasks()) {
+            statuses.add(task.getStatus());
+        }
+        return new ArrayList<>(statuses);
     }
 
     public List<Task> getPriorityUpdatedTasks() {
         LocalDate today = LocalDate.now();
-        return tasks.stream()
-                .filter(task -> ChronoUnit.DAYS.between(today, task.getDeadline()) <= 10)
-                .collect(Collectors.toList());
+        List<Task> result = new ArrayList<>();
+        for (Task task : tasks.getTasks()) {
+            if (ChronoUnit.DAYS.between(today, task.getDeadline()) <= 10) {
+                result.add(task);
+            }
+        }
+        return result;
     }
 
     public List<Task> listAllTasksByEDF() {
@@ -97,10 +136,11 @@ public class TaskService {
 
     private void updatePriorities() {
         LocalDate today = LocalDate.now();
-        for (Task task : tasks) {
+        for (Task task : tasks.getTasks()) {
             long daysUntilDeadline = ChronoUnit.DAYS.between(today, task.getDeadline());
             if (daysUntilDeadline <= 10) {
                 task.setPriority(calculatePriority(daysUntilDeadline));
+                tasks.updatePriority(task.getName(), task.getPriority());
             }
         }
     }
