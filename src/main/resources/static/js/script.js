@@ -78,10 +78,15 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#statusModal').modal('show');
     }
 
-    document.getElementById('statusForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+    // Event listener for the update status button
+    document.getElementById('updateStatusBtn').addEventListener('click', function() {
         const taskName = document.getElementById('taskName').value;
         const newStatus = document.getElementById('newStatus').value;
+
+        if (!newStatus) {
+            Swal.fire('Error', 'Please enter a new status', 'error');
+            return;
+        }
 
         fetch(`/update-status?taskName=${encodeURIComponent(taskName)}&newStatus=${encodeURIComponent(newStatus)}`, {
             method: 'POST',
@@ -95,12 +100,12 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('Network response was not ok.');
         }).then(data => {
             console.log('Server response:', data);
+            $('#statusModal').modal('hide');
             Swal.fire(
                 'Updated!',
                 `Task "${taskName}" status has been updated to "${newStatus}".`,
                 'success'
             ).then(() => {
-                $('#statusModal').modal('hide');
                 window.location.reload();
             });
         }).catch(error => {
@@ -110,6 +115,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 'An error occurred while updating the task status.',
                 'error'
             );
+        });
+    });
+
+    // Ensure the modal is properly initialized
+    $(document).ready(function() {
+        $('#statusModal').modal({
+            show: false
         });
     });
 
@@ -196,3 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 });
+
+function clearSearch() {
+    window.location.href = `/search?keyword=`;
+}

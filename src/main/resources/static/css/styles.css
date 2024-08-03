@@ -88,131 +88,151 @@ table tbody tr:hover {
     background-color: #e9ecef;
 }
 
-/* Button Group Styles */
-.btn-group {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-.btn-group button {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.btn-group button:hover {
-    background-color: #5a6268;
-}
-
-/* Modal Styles */
-.modal-header {
-    background-color: #007bff;
-    color: white;
-}
-
-.modal-body .form-control {
-    margin-bottom: 10px;
-}
-
-.modal-content {
-    border-radius: 8px;
-}
-
-.modal-content .btn-primary {
-    background-color: #007bff;
-    border: none;
-}
-
-.modal-content .btn-primary:hover {
-    background-color: #0056b3;
-}
-
-/* Status Window Modal */
-dialog.modal {
-    border: none;
-    border-radius: 8px;
-    background-color: white;
-    padding: 20px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-dialog.modal .close {
-    float: right;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-dialog.modal .close:hover {
-    color: #ff0000;
-}
-
-/* Custom Spacing */
-.container {
-    margin-top: 50px;
-}
-
-.card-body {
-    padding: 20px;
-}
-
-.table-striped tbody tr {
-    transition: background-color 0.3s;
-}
-
-.input-group-append .btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-/* Custom Button Styles */
-.btn-link {
-    padding: 0;
-    border: none;
+/* Sorting Buttons Styles in Header */
+th button {
     background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: #007bff;
+    font-size: 16px;
     cursor: pointer;
 }
 
-.btn-link i {
-    font-size: 1.2rem;
-    color: #007bff;
-    transition: color 0.3s;
-}
-
-.btn-link:hover i {
+th button:hover {
     color: #0056b3;
 }
 
-/* Action Button Styles */
+/* Action Buttons Styles */
 .action-buttons .btn-link {
-    margin: 0 5px;
+    color: #6c757d;
+    font-size: 18px;
+    cursor: pointer;
 }
 
-.action-buttons .btn-link .fas.fa-pen {
-    color: #28a745;
+.action-buttons .btn-link:hover {
+    color: #5a6268;
 }
 
-.action-buttons .btn-link .fas.fa-pen:hover {
-    color: #218838;
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-.action-buttons .btn-link .fas.fa-trash {
-    color: #dc3545;
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 8px;
 }
 
-.action-buttons .btn-link .fas.fa-trash:hover {
-    color: #c82333;
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
 }
 
-.btn {
-    margin-left: 10px;
-    margin-right: 10px;
+.close:hover, .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1050; /* Ensure this is above other content */
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Slightly transparent background */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 8px;
+    z-index: 1060; /* Ensure this is above the overlay */
+}
+
+/* Status Update Modal */
+.modal-content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content form .form-group {
+    margin-bottom: 15px;
+}
+
+/* Status Window Modal */
+#statusWindow {
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust transparency if needed */
+    border-radius: 8px;
+    padding: 20px;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-width: 90%;
+    width: 400px;
+    z-index: 1050; /* Ensure this is above other content */
+    pointer-events: auto; /* Ensure the modal can receive pointer events */
+}
+
+#statusWindow .modal-content {
+    background-color: #ffffff; /* Ensure visibility */
+    padding: 15px;
+    border-radius: 8px;
+    position: relative; /* Make sure the content is properly positioned */
+}
+
+#statusWindow .close {
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px; /* Adjust as needed */
+}
+
+.input-group-prepend {
+    margin-right: -1px; /* Remove the border between the undo button and input field */
+}
+
+.input-group-prepend .btn {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.input-group-append .btn {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+ul {
+  list-style-type: none;
 }
