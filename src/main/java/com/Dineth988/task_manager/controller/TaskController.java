@@ -7,10 +7,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
 public class TaskController {
+
     @Autowired
     private TaskService taskService;
 
@@ -66,5 +68,35 @@ public class TaskController {
     @ResponseBody
     public Map<String, Long> getDaysLeftForTasks() {
         return taskService.getDaysLeftForTasks();
+    }
+
+    @GetMapping("/search")
+    public String searchTasks(@RequestParam String keyword, Model model) {
+        model.addAttribute("tasks", taskService.searchTasks(keyword));
+        return "index";
+    }
+
+    @GetMapping("/status-window")
+    public String showStatusWindow(Model model) {
+        model.addAttribute("statuses", taskService.getAllTaskStatuses());
+        return "statusWindow";
+    }
+
+    @GetMapping("/priority-updated")
+    public String getPriorityUpdatedTasks(Model model) {
+        model.addAttribute("tasks", taskService.getPriorityUpdatedTasks());
+        return "index";
+    }
+
+    @GetMapping("/sort/edf")
+    public String listAllTasksByEDF(Model model) {
+        model.addAttribute("tasks", taskService.listAllTasksByEDF());
+        return "index";
+    }
+
+    @GetMapping("/sort/sjf")
+    public String listTasksBySJF(Model model) {
+        model.addAttribute("tasks", taskService.listTasksBySJF());
+        return "index";
     }
 }

@@ -1,51 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Task Manager</title>
-    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main class="container">
-    <h1>Task Manager</h1>
-    <form id="addTaskForm">
-        <input type="text" name="name" placeholder="Task Name" required>
-        <input type="number" name="priority" placeholder="Priority" required>
-        <input type="date" name="deadline" required>
-        <input type="number" name="jobTime" placeholder="Job Time" required>
-        <button type="submit">Add Task</button>
-    </form>
+<h1>Task Manager</h1>
 
-    <div>
-        <button id="sortByPriority">Sort by Priority</button>
-        <button id="sortByDeadline">Sort by Deadline</button>
-        <button id="sortByJobTime">Sort by Job Time</button>
-    </div>
+<!-- Task Form -->
+<form action="/add" method="post">
+    <input type="text" name="name" placeholder="Task Name" required>
+    <input type="number" name="priority" placeholder="Priority">
+    <input type="date" name="deadline" placeholder="Deadline">
+    <input type="number" name="jobTime" placeholder="Job Time">
+    <button type="submit">Add Task</button>
+</form>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Priority</th>
-            <th>Deadline</th>
-            <th>Job Time</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody id="taskTableBody">
-        <!-- Tasks will be dynamically inserted here -->
-        </tbody>
-    </table>
+<!-- Task Search -->
+<input type="text" id="searchKeyword" placeholder="Search tasks...">
+<button onclick="searchTask()">Search</button>
 
-    <div>
-        <button id="showTaskCount">Show Task Count</button>
-        <button id="showDaysLeft">Show Days Left</button>
-    </div>
+<!-- Task List -->
+<div id="taskList">
+    <ul>
+        <li th:each="task : ${tasks}">
+            <span th:text="${task.name}"></span>
+            <span th:text="${task.priority}"></span>
+            <span th:text="${task.deadline}"></span>
+            <span th:text="${task.jobTime}"></span>
+            <span th:text="${task.status}"></span>
+        </li>
+    </ul>
+</div>
 
-    <div id="taskCount"></div>
-    <div id="daysLeft"></div>
-</main>
-<script th:src="@{/js/script.js}"></script>
+<!-- Status Window -->
+<div id="statusWindow" class="modal">
+    <ul>
+        <li th:each="status : ${statuses}">
+            <span th:text="${status}"></span>
+        </li>
+    </ul>
+</div>
+
+<!-- Sorting and Filtering Buttons -->
+<button onclick="showTasksByEDF()">Sort by EDF</button>
+<button onclick="showTasksBySJF()">Sort by SJF</button>
+
+<script src="script.js"></script>
 </body>
 </html>

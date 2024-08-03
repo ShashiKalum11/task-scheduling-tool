@@ -1,9 +1,7 @@
-/*
+package com.Dineth988.task_manager;/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package pdsacworiginal;
-
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +9,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -629,7 +626,7 @@ class PriorityQueue {
  }
 
 
-public class PDSACWORIGINAL {
+public class TaskManagerCLI {
 
     public static void main(String[] args) {
        PriorityQueue pq = new PriorityQueue();

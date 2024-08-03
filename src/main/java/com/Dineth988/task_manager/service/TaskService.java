@@ -2,12 +2,15 @@ package com.Dineth988.task_manager.service;
 
 import com.Dineth988.task_manager.model.Task;
 import org.springframework.stereotype.Service;
-import java.util.*;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
+
     private List<Task> tasks = new ArrayList<>();
 
     public void addTask(Task task) {
@@ -35,23 +38,23 @@ public class TaskService {
     }
 
     public List<Task> getTasksSortedByPriority() {
-        List<Task> sortedTasks = new ArrayList<>(tasks);
-        sortedTasks.sort(Comparator.comparingInt(Task::getPriority)
-                .thenComparing(Task::getDeadline)
-                .thenComparingInt(Task::getJobTime));
-        return sortedTasks;
+        return tasks.stream()
+                .sorted(Comparator.comparingInt(Task::getPriority)
+                        .thenComparing(Task::getDeadline)
+                        .thenComparingInt(Task::getJobTime))
+                .collect(Collectors.toList());
     }
 
     public List<Task> getTasksSortedByDeadline() {
-        List<Task> sortedTasks = new ArrayList<>(tasks);
-        sortedTasks.sort(Comparator.comparing(Task::getDeadline));
-        return sortedTasks;
+        return tasks.stream()
+                .sorted(Comparator.comparing(Task::getDeadline))
+                .collect(Collectors.toList());
     }
 
     public List<Task> getTasksSortedByJobTime() {
-        List<Task> sortedTasks = new ArrayList<>(tasks);
-        sortedTasks.sort(Comparator.comparingInt(Task::getJobTime));
-        return sortedTasks;
+        return tasks.stream()
+                .sorted(Comparator.comparingInt(Task::getJobTime))
+                .collect(Collectors.toList());
     }
 
     public Map<String, Long> getDaysLeftForTasks() {
@@ -62,6 +65,34 @@ public class TaskService {
             daysLeft.put(task.getName(), daysUntilDeadline);
         }
         return daysLeft;
+    }
+
+    public List<Task> searchTasks(String keyword) {
+        return tasks.stream()
+                .filter(task -> task.getName().contains(keyword))
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getAllTaskStatuses() {
+        return tasks.stream()
+                .map(Task::getStatus)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Task> getPriorityUpdatedTasks() {
+        LocalDate today = LocalDate.now();
+        return tasks.stream()
+                .filter(task -> ChronoUnit.DAYS.between(today, task.getDeadline()) <= 10)
+                .collect(Collectors.toList());
+    }
+
+    public List<Task> listAllTasksByEDF() {
+        return getTasksSortedByDeadline();
+    }
+
+    public List<Task> listTasksBySJF() {
+        return getTasksSortedByJobTime();
     }
 
     private void updatePriorities() {
