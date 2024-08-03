@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<main class="container">
+    <h1>Task Manager</h1>
+    <form id="addTaskForm">
+        <input type="text" name="name" placeholder="Task Name" required>
+        <input type="number" name="priority" placeholder="Priority" required>
+        <input type="date" name="deadline" required>
+        <input type="number" name="jobTime" placeholder="Job Time" required>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <div>
+        <button id="sortByPriority">Sort by Priority</button>
+        <button id="sortByDeadline">Sort by Deadline</button>
+        <button id="sortByJobTime">Sort by Job Time</button>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Priority</th>
+            <th>Deadline</th>
+            <th>Job Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="taskTableBody">
+        <!-- Tasks will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+    <div>
+        <button id="showTaskCount">Show Task Count</button>
+        <button id="showDaysLeft">Show Days Left</button>
+    </div>
+
+    <div id="taskCount"></div>
+    <div id="daysLeft"></div>
+</main>
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
