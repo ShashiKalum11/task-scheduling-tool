@@ -428,12 +428,12 @@ class PriorityQueue {
             String status = item.getStatus();
 
             switch (status) {
-                case "Not Started":
+                case "Not yet Started":
                     if (!hasNotStarted) {
                         
                         hasNotStarted = true;
                     }
-                    System.out.printf("%-20s %-20s %d%n", item.getTaskName(), "Not Started", daysUntilDeadline);
+                    System.out.printf("%-20s %-20s %d%n", item.getTaskName(), "Not yet Started", daysUntilDeadline);
                     found = true;
                     break;
 
@@ -446,12 +446,12 @@ class PriorityQueue {
                     found = true;
                     break;
 
-                case "Finished":
+                case "Completed":
                     if (!hasFinished) {
                         
                         hasFinished = true;
                     }
-                    System.out.printf("%-20s %-20s %d%n", item.getTaskName(), "Finished", daysUntilDeadline);
+                    System.out.printf("%-20s %-20s %d%n", item.getTaskName(), "Completed", daysUntilDeadline);
                     found = true;
                     break;
             }
