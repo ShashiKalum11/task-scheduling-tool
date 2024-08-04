@@ -489,7 +489,7 @@ class PriorityQueue {
         while (true) {
 //            clearScreen();
             
-            int choice = getUserInput("Choose an option: ");
+            int choice = getUserInput("Select an option: ");
             
             switch (choice) {
                 case 1: addTask(); break;
