@@ -611,7 +611,7 @@ class PriorityQueue {
     }
 
     private void exit() {
-        System.out.println("Exiting...");
+        System.out.println("Cancelling...");
         scanner.close();
     }
 
